@@ -3,7 +3,7 @@ public class Conducteur {
     private int age;
     private static final int AGE_MINIMUM_CONDUITE = 18;
 
-    public Conducteur(String name, int years) {
+    public Conducteur(final String name, final int years) {
         this.nom = name;
         this.age = years;
     }
@@ -12,7 +12,7 @@ public class Conducteur {
         return age >= AGE_MINIMUM_CONDUITE;
     }
 
-    public void demarrerVoiture(Voiture voiture) {
+    public void demarrerVoiture(final Voiture voiture) {
         if (estAdulte()) {
             System.out.println(nom + " démarre la voiture.");
         } else {
@@ -20,11 +20,11 @@ public class Conducteur {
         }
     }
 
-    public void arreterVoiture(Voiture voiture) {
+    public void arreterVoiture(final Voiture voiture) {
         System.out.println(nom + " arrête la voiture.");
     }
 
-    public void changerVitesse(Voiture voiture, int nouvelleVitesse) {
+    public void changerVitesse(final Voiture voiture, int nouvelleVitesse) {
         System.out.println(nom + " change la vitesse de la voiture à " + nouvelleVitesse);
         int vitesseActuelle;
         if (voiture.getVitesse() >= nouvelleVitesse) {
