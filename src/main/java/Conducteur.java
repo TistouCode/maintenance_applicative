@@ -1,4 +1,4 @@
-public class Conducteur {
+public final class Conducteur {
     private String nom;
     private int age;
     private static final int AGE_MINIMUM_CONDUITE = 18;
