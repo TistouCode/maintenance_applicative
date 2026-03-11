@@ -1,6 +1,7 @@
 public class Conducteur {
     private String nom;
     private int age;
+    private static final int AGE_MINIMUM_CONDUITE = 18;
 
     public Conducteur(String name, int years) {
         this.nom = name;
@@ -8,7 +9,7 @@ public class Conducteur {
     }
 
     public boolean estAdulte() {
-        return age >= 10;
+        return age >= AGE_MINIMUM_CONDUITE;
     }
 
     public void demarrerVoiture(Voiture voiture) {
