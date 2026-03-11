@@ -74,5 +74,85 @@
     avant `ralentir()`, ce qui crée une dépendance entre deux tests unitaires
     → chaque test devrait être indépendant.
 
+---
 
+## Question 4 – Analyse CheckStyle (Conducteur.java – 21 warnings)
 
+CheckStyle a remonté 21 avertissements sur `Conducteur.java`. En regardant ça de plus près,
+on peut les regrouper en 5 grands types de problèmes :
+
+---
+
+### 1. Javadoc absent partout
+
+C'est de loin la catégorie la plus représentée. Aucun attribut, aucune méthode, aucun
+constructeur n'a de commentaire Javadoc. CheckStyle le signale systématiquement :
+- attributs `nom` et `age` (lignes 2 et 3)
+- constructeur et toutes les méthodes publiques (lignes 5, 10, 14, 22, 26)
+
+Et en plus, il n'y a pas de fichier `package-info.java` parce qu'il n'y a tout simplement
+pas de package déclaré (ligne 1).
+
+---
+
+### 2. Paramètres qui devraient être `final`
+
+CheckStyle signale que tous les paramètres de méthodes devraient être déclarés `final`
+pour éviter qu'on les réassigne par erreur. Ça concerne :
+- `name` et `years` dans le constructeur
+- `voiture` dans `demarrerVoiture`, `arreterVoiture` et `changerVitesse`
+- `nouvelleVitesse` dans `changerVitesse`
+
+6 occurrences en tout.
+
+---
+
+### 3. DesignForExtension – problème d'héritage
+
+La classe `Conducteur` n'est pas `final`, et aucune de ses méthodes ne l'est non plus.
+CheckStyle considère ça comme un risque : si quelqu'un hérite de la classe et surcharge
+une méthode, il n'a aucune indication sur ce qu'il peut ou ne peut pas faire.
+La solution serait soit de passer la classe en `final`, soit d'ajouter un Javadoc
+qui explique le comportement attendu en cas d'héritage.
+
+Ça touche les 4 méthodes publiques : `estAdulte`, `demarrerVoiture`, `arreterVoiture`,
+`changerVitesse`.
+
+---
+
+### 4. Nombre magique
+
+Le `10` dans `age >= 10` (ligne 11) est signalé comme "magic number". Il faudrait
+le remplacer par une constante avec un nom parlant, genre `AGE_MINIMUM_CONDUITE`.
+Ce qui est d'autant plus pertinent qu'en plus, la valeur est fausse (18 ans, pas 10).
+
+---
+
+### 5. Lignes trop longues
+
+Deux lignes dépassent les 80 caractères autorisés :
+- ligne 18 : 83 caractères
+- ligne 27 : 90 caractères
+
+---
+
+### Est-ce que ça concorde avec mon analyse manuelle ?
+
+Dans l'ensemble, oui. Les points que j'avais relevés à la main se retrouvent bien dans
+le rapport CheckStyle :
+
+- Le `10` dans `estAdulte()` → retrouvé via `MagicNumber` (point 1 et 9 de mon analyse)
+- L'absence de package → retrouvé via `JavadocPackage` (point 11)
+- Les paramètres `name`/`years` mal nommés → retrouvés via `FinalParameters` (point 3)
+- Le paramètre `voiture` inutilisé → aussi via `FinalParameters` (point 4)
+- La ligne 27 trop longue correspond bien à la déclaration de `vitesseActuelle`
+  qui est inutilisée (point 2)
+
+Ce que j'avais raté en lisant le code :
+- L'absence totale de Javadoc → CheckStyle le détecte automatiquement, moi pas
+- Le problème de `DesignForExtension` → c'est plus une règle de style qu'un bug,
+  difficile à voir sans outil
+
+**En résumé** : CheckStyle confirme bien ce que j'avais trouvé, et en plus il
+attrape les problèmes de forme (documentation, style) que je n'avais pas pensé
+à vérifier à la main.
